@@ -11,7 +11,7 @@ if (!isset($_SESSION['username'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lavanderia Inventory System - Satuan Barang</title>
+    <title>SIMAKAR - Jabatan</title>
     <link rel="stylesheet" href="assets/page.css">
     <!-- Bootstrap CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
@@ -124,7 +124,7 @@ if (!isset($_SESSION['username'])) {
             </a>
             <ul class="side-menu top">
                 <li>
-                    <a href="#">
+                    <a href="dashboard.php">
                         <i class='bx bxs-dashboard' ></i>
                         <span class="text">Dashboard</span>
                     </a>
@@ -184,15 +184,11 @@ if (!isset($_SESSION['username'])) {
                 <i class='bx bx-menu' ></i>
             </nav>
             <!-- NAVBAR -->
-
+            
             <!-- Main Content -->
             <div class="main" style="background-color: #EEEEEE">
                 <!-- Page Title -->
-                <div class="head-title">
-                    <div class="left" style="margin-left: 36px; padding-top: 20px;">
-                        <h4>Jabatan</h4>
-                    </div>
-                </div>
+                
                 <!-- Page Title -->
 
                 <!-- Tables -->
