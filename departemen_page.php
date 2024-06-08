@@ -4,13 +4,14 @@ if (!isset($_SESSION['username'])) {
     header("Location: login.php");
     exit();
 }
-?>  
+?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lavanderia Inventory System - Satuan Barang</title>
+    <title>SIMAKAR - Jabatan</title>
     <link rel="stylesheet" href="assets/page.css">
     <!-- Bootstrap CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
@@ -118,19 +119,19 @@ if (!isset($_SESSION['username'])) {
         <!-- SIDEBAR -->
         <section id="sidebar">
             <a href="#" class="brand">
-                <i class='bx bxs-smile'></i>
+                <i class='bx bxs-id-card'></i>
                 <span class="text">Simakar</span>
             </a>
             <ul class="side-menu top">
                 <li>
-                    <a href="#">
+                    <a href="dashboard.php">
                         <i class='bx bxs-dashboard' ></i>
                         <span class="text">Dashboard</span>
                     </a>
                 </li>
                 <li class="active">
                     <a href="jabatan_page.php">
-                        <i class='bx bxs-shopping-bag-alt' ></i>
+                        <i class='bx bxs-briefcase' ></i>
                         <span class="text">Jabatan</span>
                     </a>
                 </li>
@@ -142,13 +143,13 @@ if (!isset($_SESSION['username'])) {
                 </li>
                 <li>
                     <a href="#">
-                        <i class='bx bxs-message-dots' ></i>
+                        <i class='bx bxs-package'></i>
                         <span class="text">Proyek</span>
                     </a>
                 </li>
                 <li>
                     <a href="#">
-                        <i class='bx bxs-group' ></i>
+                        <i class='bx bxs-user' ></i>
                         <span class="text">Karyawan</span>
                     </a>
                 </li>
@@ -167,7 +168,7 @@ if (!isset($_SESSION['username'])) {
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="logout">
+                    <a href="" class="logout" data-toggle="modal" data-target="#logoutModal">
                         <i class='bx bxs-log-out-circle' ></i>
                         <span class="text">Logout</span>
                     </a>
@@ -183,15 +184,11 @@ if (!isset($_SESSION['username'])) {
                 <i class='bx bx-menu' ></i>
             </nav>
             <!-- NAVBAR -->
-
+            
             <!-- Main Content -->
             <div class="main" style="background-color: #EEEEEE">
                 <!-- Page Title -->
-                <div class="head-title">
-                    <div class="left" style="margin-left: 36px; padding-top: 20px;">
-                        <h3>Jabatan</h3>
-                    </div>
-                </div>
+                
                 <!-- Page Title -->
 
                 <!-- Tables -->
@@ -228,7 +225,7 @@ if (!isset($_SESSION['username'])) {
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h2 class="modal-title" id="addModalLabel">Tambah Jabatan</h2>
+                            <h2 class="modal-title" id="addModalLabel">Tambah</h2>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -297,6 +294,28 @@ if (!isset($_SESSION['username'])) {
                     </div>
                 </div>
             </div>
+
+            <!-- Logout Modal -->
+            <div id="logoutModal" class="modal fade" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="logoutModalLabel">Konfirmasi Logout</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            Apakah Anda yakin ingin logout?
+                        </div>
+                        <div class="modal-footer">
+                            <a href="php/login/logout.php" class="btn btn-primary">Iya</a>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Tidak</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
              <!-- The Modal -->
     </div>
 

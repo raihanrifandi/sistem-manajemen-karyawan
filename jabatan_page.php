@@ -136,7 +136,7 @@ if (!isset($_SESSION['username'])) {
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="departemen_page.php">
                         <i class='bx bxs-doughnut-chart' ></i>
                         <span class="text">Departemen</span>
                     </a>
