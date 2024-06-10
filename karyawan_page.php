@@ -1,17 +1,35 @@
 <?php
+
+include 'config/koneksi.php';
+
 session_start();
 if (!isset($_SESSION['username'])) {
     header("Location: login.php");
     exit();
 }
+
+// Dropdown
+$jabatanResult = mysqli_query($conn, "SELECT id_jabatan, nama_jabatan FROM jabatan");
+$jabatanOptions = [];
+while ($row = mysqli_fetch_assoc($jabatanResult)) {
+    $jabatanOptions[] = $row;
+}
+
+$departemenResult = mysqli_query($conn, "SELECT id_departemen, nama_departemen FROM departemen");
+$departemenOptions = [];
+while ($row = mysqli_fetch_assoc($departemenResult)) {
+    $departemenOptions[] = $row;
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIMAKAR - Jabatan</title>
+    <title>SIMAKAR - Karyawan</title>
+    <script src="scripts/app.js"></script>
     <link rel="stylesheet" href="assets/page.css">
     <!-- Bootstrap CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
@@ -44,7 +62,7 @@ if (!isset($_SESSION['username'])) {
         }
         .table {
             width: 100%; 
-            min-width: 1065px; 
+            min-width: 1275px; 
             
         }
         .btn-primary {
@@ -111,6 +129,20 @@ if (!isset($_SESSION['username'])) {
         .modal {
             z-index: 1060; 
         }
+        .custom-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px; /* Adjust padding as needed */
+            margin-left: 1px;
+        }
+
+        .custom-icon {
+            font-size: 12px; /* Adjust the font size */
+            width: 12px;
+            height: 12px;
+            line-height: 12px;
+        }
     </style>
 </head>
 <body>
@@ -129,7 +161,7 @@ if (!isset($_SESSION['username'])) {
                         <span class="text">Dashboard</span>
                     </a>
                 </li>
-                <li class="active">
+                <li>
                     <a href="jabatan_page.php">
                         <i class='bx bxs-briefcase' ></i>
                         <span class="text">Jabatan</span>
@@ -147,7 +179,7 @@ if (!isset($_SESSION['username'])) {
                         <span class="text">Proyek</span>
                     </a>
                 </li>
-                <li>
+                <li class="active">
                     <a href="karyawan_page.php">
                         <i class='bx bxs-user' ></i>
                         <span class="text">Karyawan</span>
@@ -197,20 +229,26 @@ if (!isset($_SESSION['username'])) {
                         <div class="col-12">
                             <div class="table-wrapper">
                                 <div class="table-header">
-                                    <h3>Data Jabatan</h3>
+                                    <h3>Data Karyawan</h3>
                                     <button id="addButton" class="btn btn-primary">Tambah Data +</button>
                                 </div>
                                 <hr>
-                                <table id="jabatanTable" class="table table-bordered table-hover">
+                                <table id="karyawanTable" class="table table-bordered table-hover">
                                     <thead>
                                         <tr>
                                             <th>No</th>
+                                            <th>ID Karyawan</th>
+                                            <th>Nama Karyawan</th>
+                                            <th>Email</th>
+                                            <th>No Telepon</th>
+                                            <th>Hire Date</th>
+                                            <th>Departemen</th>
                                             <th>Jabatan</th>
-                                            <th>Deskripsi</th>
+                                            <th>Status</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="jabatanTableBody">
+                                    <tbody id="karyawanTableBody">
                                     </tbody>
                                 </table>
                             </div>
@@ -231,14 +269,51 @@ if (!isset($_SESSION['username'])) {
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form id="tambahJabatanForm">
+                            <form id="tambahKaryawanForm">
                                 <div class="form-group">
-                                    <label for="jabatan">Jabatan <span style="color: red;">*</span></label>
-                                    <input type="text" class="form-control" id="jabatan" name="jabatan" required>
+                                    <label for="id_karyawan" class="form-label">ID Karyawan<span style="color: red;">*</span></label>
+                                    <input type="text" readonly class="form-control" id="id_karyawan" name="id_karyawan">
+                                    </div>
+                                <div class="form-group">
+                                    <label for="nama_karyawan">Nama Karyawan <span style="color: red;">*</span></label>
+                                    <input type="text" class="form-control" id="nama_karyawan" name="nama_karyawan" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="deskripsi">Deskripsi</label>
-                                    <textarea class="form-control" id="deskripsi" name="deskripsi" rows="4"></textarea>
+                                    <label for="email">Email <span style="color: red;">*</span></label>
+                                    <input type="email" class="form-control" id="email" name="email">
+                                </div>
+                                <div class="form-group">
+                                    <label for="no_telepon">No Telepon <span style="color: red;">*</span></label>
+                                    <input type="text" class="form-control" id="no_telepon" name="no_telepon">
+                                </div>
+                                <div class="form-group">
+                                    <label for="hire_date">Hire Date <span style="color: red;">*</span></label>
+                                    <input type="date" class="form-control" id="hire_date" name="hire_date">
+                                </div>
+                                <div class="form-group">
+                                    <label for="id_departemen">Departemen <span style="color: red;">*</span></label>
+                                    <select class="form-control" id="id_departemen" name="id_departemen">
+                                        <option value="" disabled selected>-- Pilih --</option>
+                                        <?php foreach ($departemenOptions as $departemen) { ?>
+                                        <option value="<?php echo $departemen['id_departemen']; ?>"><?php echo $departemen['nama_departemen']; ?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="id_jabatan">Jabatan <span style="color: red;">*</span></label>
+                                    <select class="form-control" id="id_jabatan" name="id_jabatan">
+                                        <option value="" disabled selected>-- Pilih --</option>
+                                        <?php foreach ($jabatanOptions as $jabatan) { ?>
+                                        <option value="<?php echo $jabatan['id_jabatan']; ?>"><?php echo $jabatan['nama_jabatan']; ?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="status">Status</label>
+                                    <select class="form-control" id="status" name="status">
+                                        <option value="Aktif">Aktif</option>
+                                        <option value="Tidak Aktif">Tidak aktif</option>
+                                    </select>
                                 </div>
                             </form>
                         </div>
@@ -251,7 +326,7 @@ if (!isset($_SESSION['username'])) {
             </div>
 
             <!-- Edit Data Pop Up -->
-            <div id="editModal" class="modal fade" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+            <div id="editModal" class="modal fade" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -261,20 +336,56 @@ if (!isset($_SESSION['username'])) {
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form id="editJabatanForm">
-                                <input type="hidden" id="editIdJabatan" name="id_jabatan">
+                            <form id="editKaryawanForm">
                                 <div class="form-group">
-                                    <label for="editJabatan">Jabatan <span style="color: red;">*</span></label>
-                                    <input type="text" class="form-control" id="editJabatan" name="jabatan" required>
+                                    <label for="edit_id_karyawan" class="form-label">ID Karyawan<span style="color: red;">*</span></label>
+                                    <input type="text" readonly class="form-control" id="edit_id_karyawan" name="edit_id_karyawan">
+                                    </div>
+                                <div class="form-group">
+                                    <label for="edit_nama_karyawan">Nama Karyawan <span style="color: red;">*</span></label>
+                                    <input type="text" class="form-control" id="edit_nama_karyawan" name="edit_nama_karyawan" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="editDeskripsi">Deskripsi</label>
-                                    <textarea class="form-control" id="editDeskripsi" name="deskripsi" rows="4"></textarea>
+                                    <label for="edit_email">Email <span style="color: red;">*</span></label>
+                                    <input type="email" class="form-control" id="edit_email" name="edit_email">
+                                </div>
+                                <div class="form-group">
+                                    <label for="edit_no_telepon">No Telepon <span style="color: red;">*</span></label>
+                                    <input type="text" class="form-control" id="edit_no_telepon" name="edit_no_telepon">
+                                </div>
+                                <div class="form-group">
+                                    <label for="edit_hire_date">Hire Date <span style="color: red;">*</span></label>
+                                    <input type="date" class="form-control" id="edit_hire_date" name="edit_hire_date">
+                                </div>
+                                <div class="form-group">
+                                    <label for="edit_id_departemen">Departemen <span style="color: red;">*</span></label>
+                                    <select class="form-control" id="edit_id_departemen" name="edit_id_departemen">
+                                        <option value="" disabled selected>-- Pilih --</option>
+                                        <?php foreach ($departemenOptions as $departemen) { ?>
+                                        <option value="<?php echo $departemen['id_departemen']; ?>"><?php echo $departemen['nama_departemen']; ?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="edit_id_jabatan">Jabatan <span style="color: red;">*</span></label>
+                                    <select class="form-control" id="edit_id_jabatan" name="edit_id_jabatan">
+                                        <option value="" disabled selected>-- Pilih --</option>
+                                        <?php foreach ($jabatanOptions as $jabatan) { ?>
+                                        <option value="<?php echo $jabatan['id_jabatan']; ?>"><?php echo $jabatan['nama_jabatan']; ?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="edit_status">Status</label>
+                                    <select class="form-control" id="edit_status" name="edit_status">
+                                        <option value="Aktif">Aktif</option>
+                                        <option value="Tidak Aktif">Tidak aktif</option>
+                                    </select>
                                 </div>
                             </form>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" id="updateButton" class="btn btn-primary">Update</button>
+                            <button type="button" id="updateButton" class="btn btn-primary">Simpan</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         </div>
                     </div>
@@ -315,34 +426,40 @@ if (!isset($_SESSION['username'])) {
                     </div>
                 </div>
             </div>
-
              <!-- The Modal -->
     </div>
 
     <!-- jQuery and DataTables Scripts -->
     <script>
     $(document).ready(function() {
-        var table = $('#jabatanTable').DataTable({
+        var table = $('#karyawanTable').DataTable({
             "pageLength": 5,
             "lengthMenu": [5, 10, 25, 50],
             "searching": true,
             "paging": true,
             "info": true,
+            "scrollX": true,
             "ajax": {
-                "url": "php/jabatan/read.php",
+                "url": "php/karyawan/read.php",
                 "type": "GET",
-                "dataSrc": ""
+                "dataSrc": "",
             },
             "columns": [
                 { "data": null, "render": function(data, type, row, meta) {
                     return meta.row + 1;
                 }},
+                { "data": "id_karyawan" },
+                { "data": "nama_karyawan" },
+                { "data": "email" },
+                { "data": "no_telepon" },
+                { "data": "hire_date" },
+                { "data": "nama_departemen" },
                 { "data": "nama_jabatan" },
-                { "data": "deskripsi" },
+                { "data": "status" },
                 { "data": null, "render": function(data, type, row) {
                     return `
-                        <button class='btn btn-sm btn-primary editButton' data-id='${row.id_jabatan}' data-nama_jabatan='${row.nama_jabatan}' data-deskripsi='${row.deskripsi}'><i class='fas fa-edit'></i></button>
-                        <button class='btn btn-sm btn-danger deleteButton' data-id='${row.id_jabatan}'><i class='fas fa-trash'></i></button>
+                        <button class='btn btn-sm btn-primary editButton' data-id='${row.id_karyawan}' data-nama_karyawan='${row.nama_karyawan}' data-email='${row.email}' data-no_telepon='${row.no_telepon}' data-hire_date='${row.hire_date}' data-id_departemen='${row.id_departemen}' data-id_jabatan='${row.id_jabatan}' data-status='${row.status}'><i class='fas fa-edit'></i></button>
+                        <button class='btn btn-sm btn-danger deleteButton' data-id='${row.id_karyawan}'><i class='fas fa-trash'></i></button>
                     `;
                 }}
             ],
@@ -351,27 +468,30 @@ if (!isset($_SESSION['username'])) {
             }
         });
 
+
         // CREATE OPERATION BUTTON
         $('#addButton').on('click', function () {
             $('#addModal').modal('show');
+            const generatedID = generateKaryawanID();
+            $('#id_karyawan').val(generatedID);
         });
 
         // CREATE OPERATION LOGIC
         $('#saveButton').on('click', function () {
-            var formData = $('#tambahJabatanForm').serialize();
-            console.log(formData);
+            var formData = $('#tambahKaryawanForm').serialize();
             $.ajax({
-                url: 'php/jabatan/create.php',
+                url: 'php/karyawan/create.php',
                 type: 'POST',
                 data: formData,
                 success: function (response) {
                     $('#addModal').modal('hide');
-                    $('#tambahJabatanForm')[0].reset();
+                    $('#tambahKaryawanForm')[0].reset();
                     Swal.fire({
                         title: 'Data Berhasil Disimpan',
                         icon: 'success',
                         confirmButtonText: 'OK'
                     });
+                    console.log(formData);
                     table.ajax.reload();
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
@@ -381,34 +501,68 @@ if (!isset($_SESSION['username'])) {
         });
 
         // UPDATE OPERATION BUTTON
+        // UPDATE OPERATION BUTTON
+            // UPDATE OPERATION BUTTON
+        // UPDATE OPERATION BUTTON
         $(document).on('click', '.editButton', function() {
-            const idJabatan = $(this).data('id'); // $(this).data('id'); ini tidak perlu diubah ya, cukup penamaan variabelnya saja
-            const jabatan = $(this).data('nama_jabatan');
-            const deskripsi = $(this).data('deskripsi');
+            const idKaryawan = $(this).data('id'); 
+            const namaKaryawan = $(this).data('nama_karyawan');
+            const email = $(this).data('email');
+            const noTelepon = $(this).data('no_telepon'); 
+            const hireDate = $(this).data('hire_date');
+            const idDepartemen = $(this).data('id_departemen');
+            const idJabatan = $(this).data('id_jabatan');
+            const status = $(this).data('status');
 
-            console.log(jabatan);
+            const namaDepartemen = $(this).closest('tr').find('td:eq(6)').text();
+            const namaJabatan = $(this).closest('tr').find('td:eq(7)').text();
 
-            $('#editIdJabatan').val(idJabatan);
-            $('#editJabatan').val(jabatan);
-            $('#editDeskripsi').val(deskripsi);
+            $('#edit_id_karyawan').val(idKaryawan);
+            $('#edit_nama_karyawan').val(namaKaryawan);
+            $('#edit_email').val(email);
+            $('#edit_no_telepon').val(noTelepon);
+            $('#edit_hire_date').val(hireDate);
+
+            $('#edit_id_departemen').val('');
+            $('#edit_id_jabatan').val('');
+
+            $('#edit_id_departemen option').filter(function() {
+                return $(this).text() === namaDepartemen;
+            }).prop('selected', true);
+
+            $('#edit_id_jabatan option').filter(function() {
+                return $(this).text() === namaJabatan;
+            }).prop('selected', true);
+
+            $('#edit_status').val(status);
 
             $('#editModal').modal('show');
         });
 
+
         // UPDATE OPERATION LOGIC
         $('#updateButton').click(function() {
-            const idJabatan = $('#editIdJabatan').val();
-            const jabatan = $('#editJabatan').val();
-            const deskripsi = $('#editDeskripsi').val();
+            const idKaryawan = $('#edit_id_karyawan').val();
+            const namaKaryawan = $('#edit_nama_karyawan').val();
+            const email = $('#edit_email').val();
+            const noTelepon = $('#edit_no_telepon').val();
+            const hireDate = $('#edit_hire_date').val();
+            const idDepartemen = $('#edit_id_departemen').val();
+            const idJabatan = $('#edit_id_jabatan').val();
+            const status = $('#edit_status').val();
 
             $.ajax({
-                url: 'php/jabatan/update.php',
+                url: 'php/karyawan/update.php',
                 type: 'POST',
                 data: {
-                    action: 'update',
+                    id_karyawan: idKaryawan,
+                    nama_karyawan: namaKaryawan,
+                    email: email,
+                    no_telepon: noTelepon,
+                    hire_date: hireDate,
+                    id_departemen: idDepartemen,
                     id_jabatan: idJabatan,
-                    nama_jabatan: jabatan,
-                    deskripsi: deskripsi
+                    status: status
                 },
                 success: function(response) {
                     $('#editModal').modal('hide');
@@ -437,10 +591,10 @@ if (!isset($_SESSION['username'])) {
         // DELETE OPERATION LOGIC
         $('#confirmDeleteButton').click(function() {
             $.ajax({
-                url: 'php/jabatan/delete.php',
+                url: 'php/karyawan/delete.php',
                 type: 'POST',
                 data: {
-                    id_jabatan: deleteId
+                    id_karyawan: deleteId
                 },
                 success: function(response) {
                     $('#deleteModal').modal('hide');

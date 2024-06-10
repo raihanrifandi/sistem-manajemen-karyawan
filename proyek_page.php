@@ -11,7 +11,7 @@ if (!isset($_SESSION['username'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIMAKAR - Jabatan</title>
+    <title>SIMAKAR - Proyek</title>
     <link rel="stylesheet" href="assets/page.css">
     <!-- Bootstrap CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
@@ -129,7 +129,7 @@ if (!isset($_SESSION['username'])) {
                         <span class="text">Dashboard</span>
                     </a>
                 </li>
-                <li class="active">
+                <li>
                     <a href="jabatan_page.php">
                         <i class='bx bxs-briefcase' ></i>
                         <span class="text">Jabatan</span>
@@ -141,7 +141,7 @@ if (!isset($_SESSION['username'])) {
                         <span class="text">Departemen</span>
                     </a>
                 </li>
-                <li>
+                <li class="active">
                     <a href="proyek_page.php">
                         <i class='bx bxs-package'></i>
                         <span class="text">Proyek</span>
@@ -197,7 +197,7 @@ if (!isset($_SESSION['username'])) {
                         <div class="col-12">
                             <div class="table-wrapper">
                                 <div class="table-header">
-                                    <h3>Data Jabatan</h3>
+                                    <h3>Data Proyek</h3>
                                     <button id="addButton" class="btn btn-primary">Tambah Data +</button>
                                 </div>
                                 <hr>

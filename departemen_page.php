@@ -11,7 +11,7 @@ if (!isset($_SESSION['username'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIMAKAR - Jabatan</title>
+    <title>SIMAKAR - Departemen</title>
     <link rel="stylesheet" href="assets/page.css">
     <!-- Bootstrap CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
@@ -129,26 +129,26 @@ if (!isset($_SESSION['username'])) {
                         <span class="text">Dashboard</span>
                     </a>
                 </li>
-                <li class="active">
+                <li>
                     <a href="jabatan_page.php">
                         <i class='bx bxs-briefcase' ></i>
                         <span class="text">Jabatan</span>
                     </a>
                 </li>
-                <li>
-                    <a href="#">
+                <li class="active">
+                    <a href="departemen_page.php">
                         <i class='bx bxs-doughnut-chart' ></i>
                         <span class="text">Departemen</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="proyek_page.php">
                         <i class='bx bxs-package'></i>
                         <span class="text">Proyek</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="karyawan_page.php">
                         <i class='bx bxs-user' ></i>
                         <span class="text">Karyawan</span>
                     </a>
@@ -197,20 +197,20 @@ if (!isset($_SESSION['username'])) {
                         <div class="col-12">
                             <div class="table-wrapper">
                                 <div class="table-header">
-                                    <h3>Data Jabatan</h3>
+                                    <h3>Data Departemen</h3>
                                     <button id="addButton" class="btn btn-primary">Tambah Data +</button>
                                 </div>
                                 <hr>
-                                <table id="jabatanTable" class="table table-bordered table-hover">
+                                <table id="departemenTable" class="table table-bordered table-hover">
                                     <thead>
                                         <tr>
                                             <th>No</th>
-                                            <th>Jabatan</th>
+                                            <th>Departemen</th>
                                             <th>Deskripsi</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="jabatanTableBody">
+                                    <tbody id="departemenTableBody">
                                     </tbody>
                                 </table>
                             </div>
@@ -231,10 +231,10 @@ if (!isset($_SESSION['username'])) {
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form id="tambahJabatanForm">
+                            <form id="tambahDepartemenForm">
                                 <div class="form-group">
-                                    <label for="jabatan">Jabatan <span style="color: red;">*</span></label>
-                                    <input type="text" class="form-control" id="jabatan" name="jabatan" required>
+                                    <label for="departemen">Departemen <span style="color: red;">*</span></label>
+                                    <input type="text" class="form-control" id="departemen" name="departemen" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="deskripsi">Deskripsi</label>
@@ -261,11 +261,11 @@ if (!isset($_SESSION['username'])) {
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form id="editJabatanForm">
-                                <input type="hidden" id="editIdJabatan" name="id_jabatan">
+                            <form id="editDepartemenForm">
+                                <input type="hidden" id="editIdDepartemen" name="id_departemen">
                                 <div class="form-group">
-                                    <label for="editJabatan">Jabatan <span style="color: red;">*</span></label>
-                                    <input type="text" class="form-control" id="editJabatan" name="jabatan" required>
+                                    <label for="editDepartemen">Departemen <span style="color: red;">*</span></label>
+                                    <input type="text" class="form-control" id="editDepartemen" name="departemen" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="editDeskripsi">Deskripsi</label>
@@ -322,14 +322,14 @@ if (!isset($_SESSION['username'])) {
     <!-- jQuery and DataTables Scripts -->
     <script>
     $(document).ready(function() {
-        var table = $('#jabatanTable').DataTable({
+        var table = $('#departemenTable').DataTable({
             "pageLength": 5,
             "lengthMenu": [5, 10, 25, 50],
             "searching": true,
             "paging": true,
             "info": true,
             "ajax": {
-                "url": "php/jabatan/read.php",
+                "url": "php/departemen/read.php",
                 "type": "GET",
                 "dataSrc": ""
             },
@@ -337,12 +337,12 @@ if (!isset($_SESSION['username'])) {
                 { "data": null, "render": function(data, type, row, meta) {
                     return meta.row + 1;
                 }},
-                { "data": "nama_jabatan" },
+                { "data": "nama_departemen" },
                 { "data": "deskripsi" },
                 { "data": null, "render": function(data, type, row) {
                     return `
-                        <button class='btn btn-sm btn-primary editButton' data-id='${row.id_jabatan}' data-nama_jabatan='${row.nama_jabatan}' data-deskripsi='${row.deskripsi}'><i class='fas fa-edit'></i></button>
-                        <button class='btn btn-sm btn-danger deleteButton' data-id='${row.id_jabatan}'><i class='fas fa-trash'></i></button>
+                        <button class='btn btn-sm btn-primary editButton' data-id='${row.id_departemen}' data-nama_departemen='${row.nama_departemen}' data-deskripsi='${row.deskripsi}'><i class='fas fa-edit'></i></button>
+                        <button class='btn btn-sm btn-danger deleteButton' data-id='${row.id_departemen}'><i class='fas fa-trash'></i></button>
                     `;
                 }}
             ],
@@ -358,15 +358,15 @@ if (!isset($_SESSION['username'])) {
 
         // CREATE OPERATION LOGIC
         $('#saveButton').on('click', function () {
-            var formData = $('#tambahJabatanForm').serialize();
+            var formData = $('#tambahDepartemenForm').serialize();
             console.log(formData);
             $.ajax({
-                url: 'php/jabatan/create.php',
+                url: 'php/departemen/create.php',
                 type: 'POST',
                 data: formData,
                 success: function (response) {
                     $('#addModal').modal('hide');
-                    $('#tambahJabatanForm')[0].reset();
+                    $('#tambahDepartemenForm')[0].reset();
                     Swal.fire({
                         title: 'Data Berhasil Disimpan',
                         icon: 'success',
@@ -382,14 +382,14 @@ if (!isset($_SESSION['username'])) {
 
         // UPDATE OPERATION BUTTON
         $(document).on('click', '.editButton', function() {
-            const idJabatan = $(this).data('id'); // $(this).data('id'); ini tidak perlu diubah ya, cukup penamaan variabelnya saja
-            const jabatan = $(this).data('nama_jabatan');
+            const idDepartemen = $(this).data('id'); // $(this).data('id'); ini tidak perlu diubah ya, cukup penamaan variabelnya saja
+            const departemen = $(this).data('nama_departemen');
             const deskripsi = $(this).data('deskripsi');
 
-            console.log(jabatan);
+            console.log(departemen);
 
-            $('#editIdJabatan').val(idJabatan);
-            $('#editJabatan').val(jabatan);
+            $('#editIdDepartemen').val(idDepartemen);
+            $('#editDepartemen').val(departemen);
             $('#editDeskripsi').val(deskripsi);
 
             $('#editModal').modal('show');
@@ -397,17 +397,17 @@ if (!isset($_SESSION['username'])) {
 
         // UPDATE OPERATION LOGIC
         $('#updateButton').click(function() {
-            const idJabatan = $('#editIdJabatan').val();
-            const jabatan = $('#editJabatan').val();
+            const idDepartemen = $('#editIdDepartemen').val();
+            const departemen = $('#editDepartemen').val();
             const deskripsi = $('#editDeskripsi').val();
 
             $.ajax({
-                url: 'php/jabatan/update.php',
+                url: 'php/departemen/update.php',
                 type: 'POST',
                 data: {
                     action: 'update',
-                    id_jabatan: idJabatan,
-                    nama_jabatan: jabatan,
+                    id_departemen: idDepartemen,
+                    nama_departemen: departemen,
                     deskripsi: deskripsi
                 },
                 success: function(response) {
@@ -437,10 +437,10 @@ if (!isset($_SESSION['username'])) {
         // DELETE OPERATION LOGIC
         $('#confirmDeleteButton').click(function() {
             $.ajax({
-                url: 'php/jabatan/delete.php',
+                url: 'php/departemen/delete.php',
                 type: 'POST',
                 data: {
-                    id_jabatan: deleteId
+                    id_departemen: deleteId
                 },
                 success: function(response) {
                     $('#deleteModal').modal('hide');

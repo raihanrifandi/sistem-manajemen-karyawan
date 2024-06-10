@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Verifikasi kata sandi tanpa hash
         if ($form_password === $stored_password) {
             $_SESSION['username'] = $form_username;
-            header("Location: ../../jabatan_page.php");
+            header("Location: ../../dashboard.php");
             exit();
         } else {
             $_SESSION['error_message'] = "Password yang anda masukkan salah!";
