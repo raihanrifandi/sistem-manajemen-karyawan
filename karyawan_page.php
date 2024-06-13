@@ -426,7 +426,7 @@ while ($row = mysqli_fetch_assoc($departemenResult)) {
                     </div>
                 </div>
             </div>
-             <!-- The Modal -->
+            <!-- The Modal -->
     </div>
 
     <!-- jQuery and DataTables Scripts -->
@@ -455,7 +455,14 @@ while ($row = mysqli_fetch_assoc($departemenResult)) {
                 { "data": "hire_date" },
                 { "data": "nama_departemen" },
                 { "data": "nama_jabatan" },
-                { "data": "status" },
+                { "data": "status", "render": function(data, type, row) {
+                    if (data === "Aktif") {
+                        return '<span class="badge badge-pill badge-success">' + data + '</span>';
+                    } else if (data === "Tidak Aktif") {
+                        return '<span class="badge badge-pill badge-danger">' + data + '</span>';
+                    }
+                    return data;
+                }},
                 { "data": null, "render": function(data, type, row) {
                     return `
                         <button class='btn btn-sm btn-primary editButton' data-id='${row.id_karyawan}' data-nama_karyawan='${row.nama_karyawan}' data-email='${row.email}' data-no_telepon='${row.no_telepon}' data-hire_date='${row.hire_date}' data-id_departemen='${row.id_departemen}' data-id_jabatan='${row.id_jabatan}' data-status='${row.status}'><i class='fas fa-edit'></i></button>
@@ -467,7 +474,6 @@ while ($row = mysqli_fetch_assoc($departemenResult)) {
                 $('#entriesInfo').text(`Showing ${settings._iDisplayStart + 1} to ${settings._iDisplayStart + settings._iDisplayLength} of ${settings.fnRecordsDisplay()} entries`);
             }
         });
-
 
         // CREATE OPERATION BUTTON
         $('#addButton').on('click', function () {
@@ -500,9 +506,6 @@ while ($row = mysqli_fetch_assoc($departemenResult)) {
             });
         });
 
-        // UPDATE OPERATION BUTTON
-        // UPDATE OPERATION BUTTON
-            // UPDATE OPERATION BUTTON
         // UPDATE OPERATION BUTTON
         $(document).on('click', '.editButton', function() {
             const idKaryawan = $(this).data('id'); 

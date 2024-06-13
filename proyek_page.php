@@ -1,9 +1,20 @@
 <?php
+
+include 'config/koneksi.php';
+
 session_start();
 if (!isset($_SESSION['username'])) {
     header("Location: login.php");
     exit();
 }
+
+// Dropdown
+$karyawanResult = mysqli_query($conn, "SELECT id_karyawan, nama_karyawan FROM karyawan WHERE id_jabatan = 7");
+$karyawanOptions = [];
+while ($row = mysqli_fetch_assoc($karyawanResult)) {
+    $karyawanOptions[] = $row;
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -44,7 +55,7 @@ if (!isset($_SESSION['username'])) {
         }
         .table {
             width: 100%; 
-            min-width: 1065px; 
+            min-width: 1275px;
             
         }
         .btn-primary {
@@ -201,16 +212,22 @@ if (!isset($_SESSION['username'])) {
                                     <button id="addButton" class="btn btn-primary">Tambah Data +</button>
                                 </div>
                                 <hr>
-                                <table id="jabatanTable" class="table table-bordered table-hover">
+                                <table id="proyekTable" class="table table-bordered table-hover">
                                     <thead>
                                         <tr>
                                             <th>No</th>
-                                            <th>Jabatan</th>
+                                            <th>ID Proyek</th>
+                                            <th>Nama Proyek</th>
                                             <th>Deskripsi</th>
+                                            <th>Tanggal Mulai</th>
+                                            <th>Tanggal Selesai</th>
+                                            <th>Manajer Proyek</th>
+                                            <th>Budget Proyek</th>
+                                            <th>Status</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="jabatanTableBody">
+                                    <tbody id="proyekTableBody">
                                     </tbody>
                                 </table>
                             </div>
@@ -231,14 +248,39 @@ if (!isset($_SESSION['username'])) {
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form id="tambahJabatanForm">
+                            <form id="tambahProyekForm">
                                 <div class="form-group">
-                                    <label for="jabatan">Jabatan <span style="color: red;">*</span></label>
-                                    <input type="text" class="form-control" id="jabatan" name="jabatan" required>
+                                    <label for="id_proyek" class="form-label">ID Proyek<span style="color: red;">*</span></label>
+                                    <input type="text" class="form-control" id="id_proyek" name="id_proyek">
+                                    </div>
+                                <div class="form-group">
+                                    <label for="nama_proyek">Nama Proyek <span style="color: red;">*</span></label>
+                                    <input type="text" class="form-control" id="nama_proyek" name="nama_proyek" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="deskripsi">Deskripsi</label>
                                     <textarea class="form-control" id="deskripsi" name="deskripsi" rows="4"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="tanggal_mulai">Tanggal Mulai <span style="color: red;">*</span></label>
+                                    <input type="date" class="form-control" id="tanggal_mulai" name="tanggal_mulai">
+                                </div>
+                                <div class="form-group">
+                                    <label for="id_karyawan">Manajer Proyek <span style="color: red;">*</span></label>
+                                    <select class="form-control" id="id_karyawan" name="id_karyawan">
+                                        <option value="" disabled selected>-- Pilih --</option>
+                                        <?php foreach ($karyawanOptions as $karyawan) { ?>
+                                        <option value="<?php echo $karyawan['id_karyawan']; ?>"><?php echo $karyawan['nama_karyawan']; ?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="budget_proyek">Budget<span style="color: red;">*</span></label>
+                                    <input type="text" id="budget_proyek" name="budget_proyek" class="form-control" placeholder="Rp." required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="status">Status</label>
+                                    <input type="text" class="form-control" id="status" name="status" value="Aktif" readonly>
                                 </div>
                             </form>
                         </div>
@@ -262,14 +304,41 @@ if (!isset($_SESSION['username'])) {
                         </div>
                         <div class="modal-body">
                             <form id="editJabatanForm">
-                                <input type="hidden" id="editIdJabatan" name="id_jabatan">
                                 <div class="form-group">
-                                    <label for="editJabatan">Jabatan <span style="color: red;">*</span></label>
-                                    <input type="text" class="form-control" id="editJabatan" name="jabatan" required>
+                                    <label for="edit_id_proyek" class="form-label">ID Proyek<span style="color: red;">*</span></label>
+                                    <input type="text" readonly class="form-control" id="edit_id_proyek" name="edit_id_proyek">
+                                    </div>
+                                <div class="form-group">
+                                    <label for="edit_nama_proyek">Nama Proyek <span style="color: red;">*</span></label>
+                                    <input type="text" class="form-control" id="edit_nama_proyek" name="edit_nama_proyek" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="editDeskripsi">Deskripsi</label>
-                                    <textarea class="form-control" id="editDeskripsi" name="deskripsi" rows="4"></textarea>
+                                    <label for="edit_deskripsi">Deskripsi</label>
+                                    <textarea class="form-control" id="edit_deskripsi" name="edit_deskripsi" rows="4"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="edit_tanggal_mulai">Tanggal Mulai <span style="color: red;">*</span></label>
+                                    <input type="date" class="form-control" id="edit_tanggal_mulai" name="edit_tanggal_mulai">
+                                </div>
+                                <div class="form-group">
+                                    <label for="edit_id_karyawan">Manajer Proyek <span style="color: red;">*</span></label>
+                                    <select class="form-control" id="edit_id_karyawan" name="edit_id_karyawan">
+                                        <option value="" disabled selected>-- Pilih --</option>
+                                        <?php foreach ($karyawanOptions as $karyawan) { ?>
+                                        <option value="<?php echo $karyawan['id_karyawan']; ?>"><?php echo $karyawan['nama_karyawan']; ?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="edit_budget_proyek">Budget<span style="color: red;">*</span></label>
+                                    <input type="text" id="edit_budget_proyek" name="edit_budget_proyek" class="form-control" placeholder="Rp." required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="edit_status">Status</label>
+                                    <select class="form-control" id="edit_status" name="edit_status">
+                                        <option value="Aktif">Aktif</option>
+                                        <option value="Selesai">Selesai</option>
+                                    </select>
                                 </div>
                             </form>
                         </div>
@@ -322,14 +391,15 @@ if (!isset($_SESSION['username'])) {
     <!-- jQuery and DataTables Scripts -->
     <script>
     $(document).ready(function() {
-        var table = $('#jabatanTable').DataTable({
+        var table = $('#proyekTable').DataTable({
             "pageLength": 5,
             "lengthMenu": [5, 10, 25, 50],
             "searching": true,
             "paging": true,
             "info": true,
+            "scrollX": true,
             "ajax": {
-                "url": "php/jabatan/read.php",
+                "url": "php/proyek/read.php",
                 "type": "GET",
                 "dataSrc": ""
             },
@@ -337,12 +407,25 @@ if (!isset($_SESSION['username'])) {
                 { "data": null, "render": function(data, type, row, meta) {
                     return meta.row + 1;
                 }},
-                { "data": "nama_jabatan" },
+                { "data": "id_proyek" },
+                { "data": "nama_proyek" },
                 { "data": "deskripsi" },
+                { "data": "tanggal_mulai" },
+                { "data": "tanggal_selesai" },
+                { "data": "manajer_proyek" },
+                { "data": "budget_proyek" },
+                { "data": "status", "render": function(data, type, row) {
+                    if (data === "Aktif") {
+                        return '<span class="badge badge-pill badge-warning">' + data + '</span>';
+                    } else if (data === "Selesai") {
+                        return '<span class="badge badge-pill badge-success">' + data + '</span>';
+                    }
+                    return data;
+                }},
                 { "data": null, "render": function(data, type, row) {
                     return `
-                        <button class='btn btn-sm btn-primary editButton' data-id='${row.id_jabatan}' data-nama_jabatan='${row.nama_jabatan}' data-deskripsi='${row.deskripsi}'><i class='fas fa-edit'></i></button>
-                        <button class='btn btn-sm btn-danger deleteButton' data-id='${row.id_jabatan}'><i class='fas fa-trash'></i></button>
+                        <button class='btn btn-sm btn-primary editButton' data-id='${row.id_proyek}' data-nama_proyek='${row.nama_proyek}' data-deskripsi='${row.deskripsi}' data-tanggal_mulai='${row.tanggal_mulai}' data-tanggal_selesai='${row.tanggal_selesai}' data-manajer_proyek='${row.manajer_proyek}' data-budget_proyek='${row.budget_proyek}' data-status='${row.status}'><i class='fas fa-edit'></i></button>
+                        <button class='btn btn-sm btn-danger deleteButton' data-id='${row.id_proyek}'><i class='fas fa-trash'></i></button>
                     `;
                 }}
             ],
@@ -358,15 +441,15 @@ if (!isset($_SESSION['username'])) {
 
         // CREATE OPERATION LOGIC
         $('#saveButton').on('click', function () {
-            var formData = $('#tambahJabatanForm').serialize();
+            var formData = $('#tambahProyekForm').serialize();
             console.log(formData);
             $.ajax({
-                url: 'php/jabatan/create.php',
+                url: 'php/proyek/create.php',
                 type: 'POST',
                 data: formData,
                 success: function (response) {
                     $('#addModal').modal('hide');
-                    $('#tambahJabatanForm')[0].reset();
+                    $('#tambahProyekForm')[0].reset();
                     Swal.fire({
                         title: 'Data Berhasil Disimpan',
                         icon: 'success',
@@ -382,33 +465,54 @@ if (!isset($_SESSION['username'])) {
 
         // UPDATE OPERATION BUTTON
         $(document).on('click', '.editButton', function() {
-            const idJabatan = $(this).data('id'); // $(this).data('id'); ini tidak perlu diubah ya, cukup penamaan variabelnya saja
-            const jabatan = $(this).data('nama_jabatan');
+            const idProyek = $(this).data('id'); 
+            const namaProyek = $(this).data('nama_proyek');
             const deskripsi = $(this).data('deskripsi');
+            const tanggalMulai = $(this).data('tanggal_mulai'); 
+            const manajerProyek = $(this).data('manajer_proyek');
+            const budgetProyek = $(this).data('budget_proyek');
+            const status = $(this).data('status');
+            const namaKaryawan= $(this).closest('tr').find('td:eq(6)').text();
+            console.log(namaKaryawan);
 
-            console.log(jabatan);
+            $('#edit_id_proyek').val(idProyek);
+            $('#edit_nama_proyek').val(namaProyek);
+            $('#edit_deskripsi').val(deskripsi);
+            $('#edit_tanggal_mulai').val(tanggalMulai);
+            $('#edit_id_karyawan').val('');
 
-            $('#editIdJabatan').val(idJabatan);
-            $('#editJabatan').val(jabatan);
-            $('#editDeskripsi').val(deskripsi);
+            $('#edit_id_karyawan option').filter(function() {
+                return $(this).text() === namaKaryawan;
+            }).prop('selected', true);
+
+            $('#edit_budget_proyek').val(tanggalMulai);
+            $('#edit_status').val(status);
 
             $('#editModal').modal('show');
         });
 
         // UPDATE OPERATION LOGIC
         $('#updateButton').click(function() {
-            const idJabatan = $('#editIdJabatan').val();
-            const jabatan = $('#editJabatan').val();
-            const deskripsi = $('#editDeskripsi').val();
+            const idProyek = $('#edit_id_proyek').val(); 
+            const namaProyek = $('#edit_nama_proyek').val();
+            const deskripsi = $('#edit_deskripsi').val();
+            const tanggalMulai = $('#edit_tanggal_mulai').val();; 
+            const manajerProyek =  $('#edit_id_karyawan').val(); ;
+            const budgetProyek = $('#edit_budget_proyek').val();
+            const status = $('#edit_status').val();
 
             $.ajax({
-                url: 'php/jabatan/update.php',
+                url: 'php/proyek/update.php',
                 type: 'POST',
                 data: {
                     action: 'update',
-                    id_jabatan: idJabatan,
-                    nama_jabatan: jabatan,
-                    deskripsi: deskripsi
+                    id_proyek: idProyek,
+                    nama_proyek: namaProyek,
+                    deskripsi: deskripsi,
+                    tanggal_mulai: tanggalMulai,
+                    manajer_proyek: manajerProyek,
+                    budget_proyek: budgetProyek,
+                    status: status
                 },
                 success: function(response) {
                     $('#editModal').modal('hide');
@@ -437,10 +541,10 @@ if (!isset($_SESSION['username'])) {
         // DELETE OPERATION LOGIC
         $('#confirmDeleteButton').click(function() {
             $.ajax({
-                url: 'php/jabatan/delete.php',
+                url: 'php/proyek/delete.php',
                 type: 'POST',
                 data: {
-                    id_jabatan: deleteId
+                    id_proyek: deleteId
                 },
                 success: function(response) {
                     $('#deleteModal').modal('hide');

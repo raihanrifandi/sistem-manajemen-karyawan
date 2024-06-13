@@ -159,10 +159,10 @@ if (!isset($_SESSION['username'])) {
                         </span>
                     </li>
                     <li>
-                        <i class='bx bxs-group' ></i>
+                        <i class='bx bxs-package' ></i>
                         <span class="text">
-                            <h3>2834</h3>
-                            <p>Visitors</p>
+                            <h3><?php echo $total_proyek; ?></h3>
+                            <p>Proyek</p>
                         </span>
                     </li>
                     <li>

@@ -6,5 +6,10 @@ $result_karyawan = $conn->query($sql_karyawan);
 $row_karyawan = $result_karyawan->fetch_assoc();
 $total_karyawan = $row_karyawan['total'];
 
+$sql_proyek = "SELECT COUNT(*) as total FROM proyek";
+$result_proyek = $conn->query($sql_proyek);
+$row_proyek = $result_proyek->fetch_assoc();
+$total_proyek = $row_proyek['total'];
+
 $conn->close();
 ?>
