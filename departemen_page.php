@@ -120,7 +120,7 @@ if (!isset($_SESSION['username'])) {
         <section id="sidebar">
             <a href="#" class="brand">
                 <i class='bx bxs-id-card'></i>
-                <span class="text">Simakar</span>
+                <span class="text">SIMAKAR</span>
             </a>
             <ul class="side-menu top">
                 <li>

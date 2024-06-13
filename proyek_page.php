@@ -55,7 +55,7 @@ while ($row = mysqli_fetch_assoc($karyawanResult)) {
         }
         .table {
             width: 100%; 
-            min-width: 1275px;
+            min-width: 1450px;
             
         }
         .btn-primary {
@@ -122,6 +122,20 @@ while ($row = mysqli_fetch_assoc($karyawanResult)) {
         .modal {
             z-index: 1060; 
         }
+        .btn.viewButton {
+            background-color: #1e90ff; 
+            border-color: #1e90ff;
+            color: white; 
+        }
+
+        .btn.viewButton .fas {
+            color: white; 
+        }
+
+        .btn.viewButton:hover {
+            background-color: #0075eb; 
+            border-color: #0075eb; 
+        }
     </style>
 </head>
 <body>
@@ -131,7 +145,7 @@ while ($row = mysqli_fetch_assoc($karyawanResult)) {
         <section id="sidebar">
             <a href="#" class="brand">
                 <i class='bx bxs-id-card'></i>
-                <span class="text">Simakar</span>
+                <span class="text">SIMAKAR</span>
             </a>
             <ul class="side-menu top">
                 <li>
@@ -235,6 +249,27 @@ while ($row = mysqli_fetch_assoc($karyawanResult)) {
                     </div>
                 </div>
                 <!-- Tables -->
+
+            <!-- View Data Pop Up -->
+            <div id="viewModal" class="modal fade" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h2 class="modal-title" id="viewModalLabel">Detail Proyek</h2>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <h5>Daftar Anggota Tim:</h5>
+                            <ul id="view_team_members"></ul>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <!-- The Modal -->
             <!-- Tambah Data Pop Up -->
@@ -424,6 +459,7 @@ while ($row = mysqli_fetch_assoc($karyawanResult)) {
                 }},
                 { "data": null, "render": function(data, type, row) {
                     return `
+                        <button class='btn btn-sm btn-primary viewButton' data-id='${row.id_proyek}'><i class='fas fa-eye'></i></button>
                         <button class='btn btn-sm btn-primary editButton' data-id='${row.id_proyek}' data-nama_proyek='${row.nama_proyek}' data-deskripsi='${row.deskripsi}' data-tanggal_mulai='${row.tanggal_mulai}' data-tanggal_selesai='${row.tanggal_selesai}' data-manajer_proyek='${row.manajer_proyek}' data-budget_proyek='${row.budget_proyek}' data-status='${row.status}'><i class='fas fa-edit'></i></button>
                         <button class='btn btn-sm btn-danger deleteButton' data-id='${row.id_proyek}'><i class='fas fa-trash'></i></button>
                     `;
@@ -558,6 +594,42 @@ while ($row = mysqli_fetch_assoc($karyawanResult)) {
                 },
                 error: function(error) {
                     console.log('Error deleting data', error);
+                }
+            });
+        });
+
+        $(document).on('click', '.viewButton', function() {
+            const idProyek = $(this).data('id');
+
+            $.ajax({
+                url: 'php/proyek/details.php',
+                type: 'GET',
+                data: {
+                    id_proyek: idProyek
+                },
+                success: function(response) {
+                    const data = JSON.parse(response);
+                    const project = data.project;
+                    const teamMembers = data.team;
+
+                    $('#view_id_proyek').text(project.id_proyek);
+                    $('#view_nama_proyek').text(project.nama_proyek);
+                    $('#view_deskripsi').text(project.deskripsi);
+                    $('#view_tanggal_mulai').text(project.tanggal_mulai);
+                    $('#view_tanggal_selesai').text(project.tanggal_selesai);
+                    $('#view_manajer_proyek').text(project.manajer_proyek);
+                    $('#view_budget_proyek').text(project.budget_proyek);
+                    $('#view_status').text(project.status);
+
+                    $('#view_team_members').empty();
+                    teamMembers.forEach(member => {
+                        $('#view_team_members').append('<li>' + member + '</li>');
+                    });
+
+                    $('#viewModal').modal('show');
+                },
+                error: function(error) {
+                    console.log('Error fetching project details', error);
                 }
             });
         });
