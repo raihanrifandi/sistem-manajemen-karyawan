@@ -165,7 +165,7 @@ while ($row = mysqli_fetch_assoc($karyawanResult)) {
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="tim_proyek_page.php">
                         <i class='bx bxs-group' ></i>
                         <span class="text">Tim Proyek</span>
                     </a>
@@ -222,7 +222,7 @@ while ($row = mysqli_fetch_assoc($karyawanResult)) {
                                             <th>Tanggal Mulai</th>
                                             <th>Tanggal Selesai</th>
                                             <th>Manajer Proyek</th>
-                                            <th>Budget Proyek</th>
+                                            <th>Budget</th>
                                             <th>Status</th>
                                             <th>Action</th>
                                         </tr>
@@ -474,6 +474,7 @@ while ($row = mysqli_fetch_assoc($karyawanResult)) {
             const status = $(this).data('status');
             const namaKaryawan= $(this).closest('tr').find('td:eq(6)').text();
             console.log(namaKaryawan);
+            console.log(budgetProyek);
 
             $('#edit_id_proyek').val(idProyek);
             $('#edit_nama_proyek').val(namaProyek);
@@ -485,7 +486,7 @@ while ($row = mysqli_fetch_assoc($karyawanResult)) {
                 return $(this).text() === namaKaryawan;
             }).prop('selected', true);
 
-            $('#edit_budget_proyek').val(tanggalMulai);
+            $('#edit_budget_proyek').val(budgetProyek);
             $('#edit_status').val(status);
 
             $('#editModal').modal('show');

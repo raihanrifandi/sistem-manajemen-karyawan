@@ -25,7 +25,7 @@ if (!empty($id_proyek) && !empty($nama_proyek) && !empty($deskripsi) && !empty($
     if ($stmt === false) {
         echo "Error preparing statement: " . $conn->error;
     } else {
-        $stmt->bind_param("ssssssss", $nama_proyek, $deskripsi, $tanggal_mulai, $tanggal_selesai, $manajer_proyek, $budget_proyek, $status, $id_proyek);
+        $stmt->bind_param("sssssiss", $nama_proyek, $deskripsi, $tanggal_mulai, $tanggal_selesai, $manajer_proyek, $budget_proyek, $status, $id_proyek);
         
         if ($stmt->execute()) {
             echo "Data proyek berhasil diperbarui";

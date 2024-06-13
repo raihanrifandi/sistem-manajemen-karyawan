@@ -186,7 +186,7 @@ while ($row = mysqli_fetch_assoc($departemenResult)) {
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="tim_proyek_page.php">
                         <i class='bx bxs-group' ></i>
                         <span class="text">Tim Proyek</span>
                     </a>
