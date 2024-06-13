@@ -11,5 +11,10 @@ $result_proyek = $conn->query($sql_proyek);
 $row_proyek = $result_proyek->fetch_assoc();
 $total_proyek = $row_proyek['total'];
 
+$sql_departemen = "SELECT COUNT(*) as total FROM departemen";
+$result_departemen = $conn->query($sql_departemen);
+$row_departemen = $result_departemen->fetch_assoc();
+$total_departemen = $row_departemen['total'];
+
 $conn->close();
 ?>

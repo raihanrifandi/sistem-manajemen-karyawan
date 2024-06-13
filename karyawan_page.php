@@ -568,13 +568,29 @@ while ($row = mysqli_fetch_assoc($departemenResult)) {
                     status: status
                 },
                 success: function(response) {
-                    $('#editModal').modal('hide');
-                    Swal.fire({
-                        title: 'Perubahan Berhasil Disimpan',
-                        icon: 'success',
-                        confirmButtonText: 'OK'
-                    });
-                    table.ajax.reload(null, false);
+                    try {
+                        var jsonResponse = JSON.parse(response);
+                        if (jsonResponse.error) {
+                            Swal.fire({
+                                title: 'Error',
+                                text: jsonResponse.error,
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Success',
+                                text: jsonResponse.success,
+                                icon: 'success',
+                                confirmButtonText: 'OK'
+                            });
+                            $('#editModal').modal('hide');
+                            $('#editKaryawanForm')[0].reset();
+                            table.ajax.reload();
+                        }
+                    } catch (e) {
+                        console.error('Invalid JSON response:', response);
+                    }
                 },
                 error: function(error) {
                     console.log('Error updating data', error);

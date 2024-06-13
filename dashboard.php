@@ -166,10 +166,10 @@ if (!isset($_SESSION['username'])) {
                         </span>
                     </li>
                     <li>
-                        <i class='bx bxs-dollar-circle' ></i>
+                        <i class='bx bxs-doughnut-chart' ></i>
                         <span class="text">
-                            <h3>$2543</h3>
-                            <p>Total Sales</p>
+                            <h3><?php echo $total_departemen; ?></h3>
+                            <p>Departemen</p>
                         </span>
                     </li>
                 </ul>
